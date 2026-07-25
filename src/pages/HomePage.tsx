@@ -46,7 +46,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       />
 
       {/* Signature Destination Carousel */}
-      <div id="signature-carousel">
+      <div id="signature-carousel" style={{ position: 'relative', zIndex: 1 }}>
         <DestinationCarousel />
       </div>
 

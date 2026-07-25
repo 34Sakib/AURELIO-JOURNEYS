@@ -54,8 +54,8 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
         justifyContent: 'space-between',
         paddingTop: '130px',
         paddingBottom: '40px',
-        zIndex: 20,
-        overflow: 'hidden',
+        zIndex: 30,
+        overflow: 'visible',
         background: 'linear-gradient(145deg, #0e2925 0%, #16403a 30%, #bf5927 75%, #e8732a 100%)',
       }}
     >
@@ -66,6 +66,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
           inset: 0,
           pointerEvents: 'none',
           zIndex: 1,
+          overflow: 'hidden',
         }}
       >
         <div
@@ -587,7 +588,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
       <div
         style={{
           position: 'relative',
-          zIndex: 20,
+          zIndex: 50,
           width: '100%',
           padding: '0 24px',
           marginTop: '40px',
