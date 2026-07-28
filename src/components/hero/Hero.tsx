@@ -114,6 +114,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
           >
             {/* PAPER PLANE & TRAJECTORY PATH (Left side flight path) */}
             <div
+              className="hero-floating-plane"
               style={{
                 position: 'absolute',
                 top: '-40px',
@@ -173,6 +174,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
 
             {/* FLOATING POLAROID CARDS (LEFT SIDE PARALLAX ON SCROLL) */}
             <div
+              className="hero-polaroids-wrapper"
               style={{
                 position: 'relative',
                 minHeight: '440px',
@@ -182,7 +184,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
             >
               {/* POLAROID 1 (TOP TILTED PHOTO CARD) - Moves on scroll */}
               <div
-                className="hero-polaroid"
+                className="hero-polaroid hero-polaroid-1"
                 style={{
                   position: 'absolute',
                   top: '-10px',
@@ -221,7 +223,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
 
               {/* POLAROID 2 (BOTTOM STACKED PHOTO CARD) - Moves on scroll in sync/parallax */}
               <div
-                className="hero-polaroid"
+                className="hero-polaroid hero-polaroid-2"
                 style={{
                   position: 'absolute',
                   top: '180px',
@@ -301,7 +303,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
                   <span
                     className="font-script"
                     style={{
-                      fontSize: 'clamp(42px, 5.5vw, 68px)',
+                      fontSize: 'clamp(36px, 5.5vw, 68px)',
                       color: '#FF9E2A',
                       fontWeight: 700,
                       lineHeight: 0.9,
@@ -319,7 +321,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
                 <h1
                   className="font-bebas"
                   style={{
-                    fontSize: 'clamp(64px, 9.5vw, 128px)',
+                    fontSize: 'clamp(44px, 8.8vw, 128px)',
                     color: '#FFFFFF',
                     lineHeight: 0.88,
                     letterSpacing: '0.04em',
@@ -338,9 +340,9 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
                 <div
                   style={{
                     fontFamily: 'Plus Jakarta Sans, sans-serif',
-                    fontSize: 'clamp(14px, 2.2vw, 22px)',
+                    fontSize: 'clamp(13px, 2.2vw, 22px)',
                     fontWeight: 800,
-                    letterSpacing: '0.24em',
+                    letterSpacing: '0.2em',
                     color: 'rgba(255, 255, 255, 0.95)',
                     textTransform: 'uppercase',
                     marginBottom: '20px',
@@ -353,7 +355,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
                 {/* Body Description */}
                 <p
                   style={{
-                    fontSize: '16px',
+                    fontSize: '15px',
                     color: 'rgba(255, 255, 255, 0.88)',
                     maxWidth: '480px',
                     lineHeight: 1.6,
@@ -417,22 +419,23 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
                 >
                   <div
                     style={{
-                      width: '42px',
-                      height: '42px',
+                      width: '38px',
+                      height: '38px',
                       borderRadius: '50%',
                       border: '1.5px dashed rgba(255, 255, 255, 0.6)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       transform: 'rotate(-12deg)',
+                      flexShrink: 0,
                     }}
                   >
-                    <Sparkles size={18} color="#FF9E2A" />
+                    <Sparkles size={16} color="#FF9E2A" />
                   </div>
                   <span
                     className="font-script"
                     style={{
-                      fontSize: '20px',
+                      fontSize: '18px',
                       color: 'rgba(255, 255, 255, 0.9)',
                       letterSpacing: '0.05em',
                       textShadow: '0 1px 3px rgba(0,0,0,0.3)',
@@ -455,6 +458,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
             }}
           >
             <div
+              className="hero-window-portal"
               style={{
                 position: 'relative',
                 width: '100%',
@@ -511,6 +515,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
 
               {/* Floating 3D Glossy Red Heart */}
               <div
+                className="hero-floating-badge-heart-1"
                 style={{
                   position: 'absolute',
                   top: '40%',
@@ -527,13 +532,13 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
                   transform: `translateY(${scrollY * -0.15}px)`,
                   transition: 'transform 100ms ease-out',
                 }}
-                className="animate-float-slow"
               >
                 <Heart fill="#FFFFFF" color="#FFFFFF" size={28} />
               </div>
 
               {/* Floating 3D Glossy Blue Heart */}
               <div
+                className="hero-floating-badge-heart-2"
                 style={{
                   position: 'absolute',
                   bottom: '10%',
@@ -550,13 +555,13 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
                   transform: `translateY(${scrollY * -0.2}px)`,
                   transition: 'transform 100ms ease-out',
                 }}
-                className="animate-float-reverse"
               >
                 <Heart fill="#FFFFFF" color="#FFFFFF" size={24} />
               </div>
 
               {/* Floating Cloud element */}
               <div
+                className="hero-floating-cloud-badge"
                 style={{
                   position: 'absolute',
                   bottom: '25%',
@@ -617,6 +622,21 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onOpenConcierge, onScrollN
           <ArrowDown size={14} />
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 1023px) {
+          .hero-floating-plane { display: none !important; }
+          .hero-polaroids-wrapper { min-height: auto !important; }
+          .hero-polaroid-1, .hero-polaroid-2 { display: none !important; }
+          .hero-window-portal { height: 380px !important; }
+          .hero-floating-badge-heart-1 { left: 0px !important; }
+          .hero-floating-badge-heart-2 { right: 0px !important; }
+          .hero-floating-cloud-badge { left: 10px !important; bottom: 10px !important; padding: 8px 14px !important; font-size: 11px !important; }
+        }
+        @media (max-width: 640px) {
+          .hero-window-portal { height: 320px !important; }
+        }
+      `}</style>
     </section>
   );
 };

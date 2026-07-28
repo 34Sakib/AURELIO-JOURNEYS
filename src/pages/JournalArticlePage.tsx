@@ -50,7 +50,7 @@ export const JournalArticlePage: React.FC = () => {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div style={{ height: '440px', borderRadius: '16px', overflow: 'hidden', marginBottom: '40px' }}>
+          <div style={{ height: 'clamp(220px, 45vh, 440px)', borderRadius: '16px', overflow: 'hidden', marginBottom: '40px' }}>
             <img src={article.image} alt={article.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
         </Reveal>

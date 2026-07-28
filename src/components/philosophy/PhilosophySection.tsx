@@ -109,7 +109,7 @@ export const PhilosophySection: React.FC<PhilosophySectionProps> = ({ isDark = f
     <section
       id="philosophy"
       style={{
-        padding: '128px 24px',
+        padding: 'clamp(64px, 10vw, 128px) 24px',
         backgroundColor: isDark ? '#1A1B18' : '#FAF7F1',
         color: isDark ? '#FAF7F1' : '#1A1B18',
         position: 'relative',

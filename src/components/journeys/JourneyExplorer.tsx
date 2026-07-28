@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Journey, JOURNEYS_DATA } from '../../data/journeysData';
 import { JourneyCard } from './JourneyCard';
-import { Search, Sparkles } from 'lucide-react';
+import { Search, Sparkles, Compass, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Reveal } from '../common/Reveal';
 
 interface JourneyExplorerProps {
   shortlist: Journey[];
@@ -44,7 +45,7 @@ export const JourneyExplorer: React.FC<JourneyExplorerProps> = ({
     <section
       id="journeys"
       style={{
-        padding: '128px 24px',
+        padding: 'clamp(64px, 8vw, 128px) 24px',
         backgroundColor: '#F1ECE1',
         position: 'relative',
       }}
@@ -55,18 +56,225 @@ export const JourneyExplorer: React.FC<JourneyExplorerProps> = ({
           margin: '0 auto',
         }}
       >
-        {/* Section Header */}
-        <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 48px' }}>
-          <span className="label-eyebrow">FEATURED TOUR PACKAGES & VACATIONS</span>
+        {/* 1. FEATURED EXPEDITIONS HERO BANNER WITH RICH IMAGERY & INFO BADGES */}
+        <Reveal>
+          <div
+            style={{
+              position: 'relative',
+              borderRadius: '24px',
+              overflow: 'hidden',
+              marginBottom: '64px',
+              boxShadow: '0 20px 48px rgba(26, 27, 24, 0.1)',
+              border: '1px solid #E4DCC8',
+              backgroundColor: '#1A1B18',
+              color: '#FAF7F1',
+            }}
+          >
+            {/* Background Image */}
+            <img
+              src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=1600&auto=format&fit=crop"
+              alt="Curated Luxury Expedition"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                opacity: 0.42,
+              }}
+            />
+
+            {/* Gradient Scrim */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(135deg, rgba(26, 27, 24, 0.92) 0%, rgba(23, 61, 58, 0.85) 55%, rgba(26, 27, 24, 0.92) 100%)',
+              }}
+            />
+
+            <div
+              style={{
+                position: 'relative',
+                zIndex: 10,
+                padding: 'clamp(32px, 5vw, 64px)',
+                display: 'grid',
+                gridTemplateColumns: '1.2fr 0.8fr',
+                gap: '40px',
+                alignItems: 'center',
+              }}
+              className="journeys-hero-grid"
+            >
+              {/* Left Column: Headline & Narrative */}
+              <div>
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    padding: '6px 16px',
+                    borderRadius: '999px',
+                    marginBottom: '18px',
+                    backdropFilter: 'blur(12px)',
+                  }}
+                >
+                  <Sparkles size={14} color="#FFB067" />
+                  <span
+                    style={{
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      color: '#FFF8F0',
+                    }}
+                  >
+                    Curated Expeditions Portfolio
+                  </span>
+                </div>
+
+                <h1
+                  className="display-lg"
+                  style={{
+                    color: '#FFFFFF',
+                    marginBottom: '16px',
+                    fontSize: 'clamp(32px, 4.5vw, 52px)',
+                    lineHeight: 1.1,
+                  }}
+                >
+                  Hand-Crafted Tour Packages & Private Expeditions
+                </h1>
+
+                <p
+                  className="body-lg"
+                  style={{
+                    color: 'rgba(250, 247, 241, 0.88)',
+                    marginBottom: '28px',
+                    maxWidth: '580px',
+                    fontSize: '16px',
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Every tour package in our portfolio is designed by certified travel curators. Enjoy private chauffeured transfers, 5-star resort stays, and exclusive access permits.
+                </p>
+
+                {/* 3 Key Benefit Chips */}
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '16px',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#FAF7F1', fontWeight: 600 }}>
+                    <CheckCircle2 size={16} color="#B5643D" />
+                    <span>100% Tailored Itineraries</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#FAF7F1', fontWeight: 600 }}>
+                    <CheckCircle2 size={16} color="#B5643D" />
+                    <span>Best Price Guarantee</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#FAF7F1', fontWeight: 600 }}>
+                    <CheckCircle2 size={16} color="#B5643D" />
+                    <span>24/7 Dedicated Support</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Glassmorphism Info Card */}
+              <div
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '20px',
+                  padding: '28px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px',
+                  boxShadow: '0 12px 32px rgba(0,0,0,0.3)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div
+                    style={{
+                      width: '44px',
+                      height: '44px',
+                      borderRadius: '12px',
+                      backgroundColor: '#B5643D',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#FAF7F1',
+                    }}
+                  >
+                    <Compass size={22} />
+                  </div>
+                  <div>
+                    <span style={{ fontFamily: 'Fraunces, serif', fontSize: '20px', color: '#FFFFFF', fontWeight: 500, display: 'block' }}>
+                      Expedition Guarantee
+                    </span>
+                    <span style={{ fontSize: '12px', color: '#C9A15E', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      Certified Travel Agency
+                    </span>
+                  </div>
+                </div>
+
+                <hr style={{ border: 'none', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.15)' }} />
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div>
+                    <span style={{ fontSize: '11px', color: 'rgba(250, 247, 241, 0.7)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block' }}>
+                      Curated Destinations
+                    </span>
+                    <span style={{ fontFamily: 'Fraunces, serif', fontSize: '24px', fontWeight: 600, color: '#FFFFFF' }}>
+                      180+
+                    </span>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '11px', color: 'rgba(250, 247, 241, 0.7)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block' }}>
+                      Customer Rating
+                    </span>
+                    <span style={{ fontFamily: 'Fraunces, serif', fontSize: '24px', fontWeight: 600, color: '#C9A15E', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      ★ 4.9 <span style={{ fontSize: '12px', color: '#FAF7F1', fontWeight: 400 }}>(10k+)</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    backgroundColor: 'rgba(250, 247, 241, 0.12)',
+                    padding: '12px 16px',
+                    borderRadius: '10px',
+                    fontSize: '12px',
+                    color: 'rgba(250, 247, 241, 0.9)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  <ShieldCheck size={16} color="#4A7A5F" />
+                  <span>100% Financial Protection & Escrow Security</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* 2. Section Header */}
+        <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 40px' }}>
+          <span className="label-eyebrow">BROWSE TOUR PACKAGES BY STYLE & REGION</span>
           <h2 className="display-lg" style={{ color: '#1A1B18', marginBottom: '16px' }}>
             Explore Popular Tour Packages
           </h2>
           <p className="body-lg">
-            Hand-crafted tour packages designed by expert travel advisors. Filter by destination, category, or duration to find your dream vacation.
+            Filter by trip style, destination region, or keyword to find your perfect holiday itinerary.
           </p>
         </div>
 
-        {/* Category Tabs & Search Bar */}
+        {/* 3. Category Tabs & Search Bar */}
         <div
           style={{
             display: 'flex',
@@ -97,7 +305,7 @@ export const JourneyExplorer: React.FC<JourneyExplorerProps> = ({
                   borderRadius: '999px',
                   fontFamily: 'Inter, sans-serif',
                   fontSize: '13px',
-                  fontWeight: 500,
+                  fontWeight: 600,
                   cursor: 'pointer',
                   transition: 'all 200ms ease',
                   boxShadow: activeCategory === cat ? '0 4px 12px rgba(181, 100, 61, 0.3)' : 'none',
@@ -142,12 +350,12 @@ export const JourneyExplorer: React.FC<JourneyExplorerProps> = ({
           </div>
         </div>
 
-        {/* Journeys Grid */}
+        {/* 4. Journeys Grid */}
         {filteredJourneys.length > 0 ? (
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
               gap: '24px',
             }}
           >
@@ -168,7 +376,7 @@ export const JourneyExplorer: React.FC<JourneyExplorerProps> = ({
               padding: '64px 24px',
               backgroundColor: '#FAF7F1',
               borderRadius: '16px',
-              border: '1px border #E4DCC8',
+              border: '1px solid #E4DCC8',
             }}
           >
             <Sparkles size={32} color="#B5643D" style={{ margin: '0 auto 16px' }} />
@@ -190,6 +398,17 @@ export const JourneyExplorer: React.FC<JourneyExplorerProps> = ({
           </div>
         )}
       </div>
+
+      <style>{`
+        @media (max-width: 960px) {
+          .journeys-hero-grid {
+            grid-template-columns: 1fr !important;
+            gap: 32px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 };
+
+export default JourneyExplorer;

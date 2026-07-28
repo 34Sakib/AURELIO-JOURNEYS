@@ -43,7 +43,7 @@ export const ConciergeModal: React.FC<ConciergeModalProps> = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '24px',
+        padding: 'clamp(12px, 3vw, 24px)',
       }}
     >
       <div
@@ -174,7 +174,7 @@ export const ConciergeModal: React.FC<ConciergeModalProps> = ({
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+            <form onSubmit={handleSubmit} className="modal-form-grid">
               {/* Name Input */}
               <div style={{ gridColumn: 'span 1' }}>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#5C5D54', marginBottom: '8px' }}>

@@ -54,7 +54,7 @@ export const EnquirePage: React.FC = () => {
             style={{
               backgroundColor: '#FFFFFF',
               borderRadius: '24px',
-              padding: '40px',
+              padding: 'clamp(20px, 4vw, 40px)',
               boxShadow: '0 8px 32px rgba(26, 27, 24, 0.06)',
               border: '1px solid #E4DCC8',
             }}
@@ -109,7 +109,7 @@ export const EnquirePage: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+              <form onSubmit={handleSubmit} className="modal-form-grid">
                 <div style={{ gridColumn: 'span 1' }}>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#5C5D54', marginBottom: '8px' }}>
                     Full Name *

@@ -142,6 +142,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               { id: '/journeys', label: 'Tour Packages' },
               { id: '/philosophy', label: 'About Us' },
               { id: '/journal', label: 'Travel Blog' },
+              { id: '/contact', label: 'Contact Us' },
             ].map((link) => {
               const isActive = location.pathname === link.id;
               return (
@@ -283,13 +284,71 @@ export const Navbar: React.FC<NavbarProps> = ({
             zIndex: 99999,
             backgroundColor: '#1A1B18',
             color: '#FAF7F1',
-            padding: '100px 32px 40px',
+            padding: '24px 24px 40px 24px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
+            overflowY: 'auto',
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          {/* Mobile Drawer Top Header with Logo and Close Icon */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '36px',
+              paddingBottom: '16px',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  border: '1px solid #B5643D',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#B5643D',
+                }}
+              >
+                <Compass size={18} />
+              </div>
+              <span
+                style={{
+                  fontFamily: 'Fraunces, serif',
+                  fontSize: '20px',
+                  fontWeight: 500,
+                  letterSpacing: '0.08em',
+                  color: '#FFFFFF',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Aurelio
+              </span>
+            </div>
+
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close Navigation Menu"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#FFFFFF',
+                cursor: 'pointer',
+                padding: '8px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <X size={28} />
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '32px' }}>
             {[
               { id: '/destinations', label: 'Destinations' },
               { id: '/journeys', label: 'Tour Packages' },
@@ -305,7 +364,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   border: 'none',
                   textAlign: 'left',
                   fontFamily: 'Fraunces, serif',
-                  fontSize: '32px',
+                  fontSize: '26px',
                   color: '#FAF7F1',
                   cursor: 'pointer',
                 }}
@@ -322,7 +381,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onOpenConcierge();
               }}
               className="btn-primary"
-              style={{ width: '100%', justifyContent: 'center' }}
+              style={{ width: '100%', justifyContent: 'center', padding: '14px' }}
             >
               Speak with a Travel Advisor
             </button>

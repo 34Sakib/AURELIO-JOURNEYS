@@ -195,6 +195,7 @@ export const DestinationGrid: React.FC<DestinationGridProps> = ({ onSelectRegion
                   }}
                   onMouseMove={(e) => handleMouseMove(e, dest.id)}
                   data-cursor="Discover"
+                  className="dest-asym-card destination-card"
                   style={{
                     gridColumn: gridSpan,
                     position: 'relative',
@@ -208,7 +209,6 @@ export const DestinationGrid: React.FC<DestinationGridProps> = ({ onSelectRegion
                     transform: isHovered ? 'translateY(-10px)' : 'translateY(0)',
                     transition: 'transform 400ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 400ms ease',
                   }}
-                  className="destination-card"
                 >
                   {/* Dynamic Moveable Image Container with Ambient Ken Burns Panning + Mouse Parallax */}
                   <div
@@ -351,9 +351,10 @@ export const DestinationGrid: React.FC<DestinationGridProps> = ({ onSelectRegion
 
       <style>{`
         @media (max-width: 900px) {
+          .dest-asym-card,
           .destination-card {
             grid-column: span 12 !important;
-            height: 400px !important;
+            height: 380px !important;
           }
         }
       `}</style>

@@ -51,7 +51,7 @@ export const ShortlistDrawer: React.FC<ShortlistDrawerProps> = ({
         {/* Drawer Header */}
         <div
           style={{
-            padding: '24px',
+            padding: '16px 20px',
             borderBottom: '1px solid #E4DCC8',
             display: 'flex',
             alignItems: 'center',

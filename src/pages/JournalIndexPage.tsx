@@ -20,7 +20,7 @@ export const JournalIndexPage: React.FC = () => {
           </div>
         </Reveal>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '32px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
           {JOURNAL_ARTICLES.map((article, idx) => (
             <Reveal key={article.id} delay={idx * 0.08}>
               <Link to={`/journal/${article.slug || article.id}`} style={{ textDecoration: 'none' }} data-cursor="Read">

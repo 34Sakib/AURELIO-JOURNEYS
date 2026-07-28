@@ -22,7 +22,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({ article, isOpen, onC
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '24px',
+        padding: 'clamp(10px, 3vw, 24px)',
       }}
     >
       <div
@@ -61,7 +61,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({ article, isOpen, onC
         </div>
 
         {/* Content */}
-        <div style={{ padding: '40px' }}>
+        <div style={{ padding: 'clamp(20px, 4vw, 40px)' }}>
           <div style={{ marginBottom: '24px' }}>
             <h1 className="display-md" style={{ color: '#1A1B18', marginBottom: '16px', lineHeight: 1.15 }}>
               {article.title}
@@ -76,7 +76,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({ article, isOpen, onC
             </div>
           </div>
 
-          <div style={{ height: '360px', borderRadius: '12px', overflow: 'hidden', marginBottom: '32px' }}>
+          <div style={{ height: 'clamp(200px, 40vh, 360px)', borderRadius: '12px', overflow: 'hidden', marginBottom: '32px' }}>
             <img src={article.image} alt={article.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
 

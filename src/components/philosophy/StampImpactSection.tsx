@@ -185,7 +185,7 @@ export const StampImpactSection: React.FC<StampImpactSectionProps> = ({ onOpenCo
     <section
       style={{
         position: 'relative',
-        padding: '128px 24px',
+        padding: 'clamp(64px, 10vw, 128px) 24px',
         backgroundImage: 'url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000&auto=format&fit=crop")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',

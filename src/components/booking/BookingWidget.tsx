@@ -34,6 +34,7 @@ export const BookingWidget: React.FC<BookingWidgetProps> = ({ onSearch }) => {
     >
       <form
         onSubmit={handleSearchSubmit}
+        className="booking-widget-form"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr)) auto',
@@ -364,6 +365,14 @@ export const BookingWidget: React.FC<BookingWidgetProps> = ({ onSearch }) => {
           </button>
         </div>
       </form>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .booking-widget-form {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

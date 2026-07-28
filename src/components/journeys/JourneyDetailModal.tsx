@@ -41,7 +41,7 @@ export const JourneyDetailModal: React.FC<JourneyDetailModalProps> = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '24px',
+        padding: 'clamp(10px, 3vw, 24px)',
         overflowY: 'auto',
       }}
     >
@@ -155,12 +155,12 @@ export const JourneyDetailModal: React.FC<JourneyDetailModalProps> = ({
         </div>
 
         {/* Modal Main Content Area */}
-        <div style={{ padding: '32px' }}>
+        <div style={{ padding: 'clamp(16px, 4vw, 32px)' }}>
           {/* Main Hero Gallery */}
           <div style={{ marginBottom: '32px' }}>
             <div
               style={{
-                height: '420px',
+                height: 'clamp(200px, 40vh, 420px)',
                 borderRadius: '16px',
                 overflow: 'hidden',
                 marginBottom: '16px',
@@ -174,14 +174,15 @@ export const JourneyDetailModal: React.FC<JourneyDetailModalProps> = ({
             </div>
 
             {/* Gallery Thumbnails */}
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '4px' }} className="hide-scrollbar">
               {[journey.heroImage, ...journey.gallery].map((imgUrl, idx) => (
                 <div
                   key={idx}
                   onClick={() => setSelectedImage(imgUrl)}
                   style={{
-                    width: '100px',
-                    height: '64px',
+                    width: '90px',
+                    height: '60px',
+                    flexShrink: 0,
                     borderRadius: '8px',
                     overflow: 'hidden',
                     cursor: 'pointer',

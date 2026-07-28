@@ -51,7 +51,7 @@ export const DestinationsIndexPage: React.FC = () => {
               {/* Left Column: Rich Travel Agency Information */}
               <div
                 style={{
-                  padding: '48px',
+                  padding: 'clamp(20px, 4vw, 48px)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
@@ -287,7 +287,7 @@ export const DestinationsIndexPage: React.FC = () => {
           </div>
 
           {/* Full Filterable Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '32px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
             {filteredDestinations.map((dest, idx) => (
               <Reveal key={dest.slug} delay={idx * 0.06}>
                 <Link to={`/destinations/${dest.slug}`} style={{ textDecoration: 'none' }} data-cursor="View">
