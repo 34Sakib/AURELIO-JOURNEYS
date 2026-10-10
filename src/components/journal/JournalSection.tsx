@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
+import React, { useState } from 'react';
 import { JOURNAL_ARTICLES, JournalArticle } from '../../data/journeysData';
 import { ArticleModal } from './ArticleModal';
 import {
@@ -11,108 +10,101 @@ import {
   Sparkles,
   User,
   Flame,
-  ArrowDown
+  Compass,
+  Mountain,
+  Sun,
+  Waves,
+  Trees,
+  Scroll,
+  LucideIcon
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface ArticleTheme {
+  primary: string;
+  accent: string;
+  bgLight: string;
+  glowColor: string;
+  icon: LucideIcon;
+  tag: string;
+}
+
+const ARTICLE_THEMES: Record<string, ArticleTheme> = {
+  'art-of-unhurried-travel': {
+    primary: '#B5643D',
+    accent: '#F3E2D6',
+    bgLight: '#FAF1EB',
+    glowColor: 'rgba(181, 100, 61, 0.14)',
+    icon: Compass,
+    tag: 'Philosophy',
+  },
+  'kyoto-secret-autumn': {
+    primary: '#9E3824',
+    accent: '#FADFD8',
+    bgLight: '#F9ECE8',
+    glowColor: 'rgba(158, 56, 36, 0.14)',
+    icon: Scroll,
+    tag: 'Cultural Heritage',
+  },
+  'patagonia-ice-and-architecture': {
+    primary: '#173D3A',
+    accent: '#D4E5E3',
+    bgLight: '#ECF4F3',
+    glowColor: 'rgba(23, 61, 58, 0.14)',
+    icon: Mountain,
+    tag: 'Architecture',
+  },
+  'serengeti-migration-nomads': {
+    primary: '#B86F20',
+    accent: '#FAE8D2',
+    bgLight: '#FAF3E8',
+    glowColor: 'rgba(184, 111, 32, 0.14)',
+    icon: Sun,
+    tag: 'Wildlife Safari',
+  },
+  'ravello-cliffside-villas': {
+    primary: '#1E627B',
+    accent: '#D3E7F0',
+    bgLight: '#ECF4F7',
+    glowColor: 'rgba(30, 98, 123, 0.14)',
+    icon: Waves,
+    tag: 'Coastal Sanctuary',
+  },
+  'alpine-thermal-engadin': {
+    primary: '#265740',
+    accent: '#D6EAE0',
+    bgLight: '#EDF5F1',
+    glowColor: 'rgba(38, 87, 64, 0.14)',
+    icon: Trees,
+    tag: 'Alpine Restoration',
+  },
+};
+
+const DEFAULT_THEME: ArticleTheme = {
+  primary: '#B5643D',
+  accent: '#F3E2D6',
+  bgLight: '#FAF1EB',
+  glowColor: 'rgba(181, 100, 61, 0.14)',
+  icon: Sparkles,
+  tag: 'Curated Monograph',
+};
 
 export const JournalSection: React.FC = () => {
   const [selectedArticle, setSelectedArticle] = useState<JournalArticle | null>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const [emailInput, setEmailInput] = useState<string>('');
   const [subscribed, setSubscribed] = useState<boolean>(false);
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(true);
 
-  const sectionRef = useRef<HTMLElement>(null);
+  const activeArticle = JOURNAL_ARTICLES[activeIndex] || JOURNAL_ARTICLES[0];
+  const activeTheme = ARTICLE_THEMES[activeArticle.id] || DEFAULT_THEME;
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: 'start',
-    containScroll: 'trimSnaps',
-    loop: false,
-    duration: 30,
-    dragFree: false,
-  });
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev > 0 ? prev - 1 : JOURNAL_ARTICLES.length - 1));
+  };
 
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
-    const progress = Math.max(0, Math.min(1, emblaApi.scrollProgress()));
-    setScrollProgress(progress * 100);
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on('select', onSelect);
-    emblaApi.on('scroll', onSelect);
-    emblaApi.on('reInit', onSelect);
-
-    return () => {
-      emblaApi.off('select', onSelect);
-      emblaApi.off('scroll', onSelect);
-    };
-  }, [emblaApi, onSelect]);
-
-  // Scroll-lock effect: When user is in this section, vertical wheel scroll moves cards horizontally.
-  // The user cannot scroll below until all cards are viewed!
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section || !emblaApi) return;
-
-    let isScrolling = false;
-
-    const handleWheel = (e: WheelEvent) => {
-      const rect = section.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-
-      // Section is active in view when its top has reached near viewport top
-      const isInFocus = rect.top <= 80 && rect.bottom >= viewportHeight * 0.75;
-
-      if (!isInFocus) return;
-
-      if (e.deltaY > 15) {
-        // Scrolling DOWN
-        if (emblaApi.canScrollNext()) {
-          e.preventDefault();
-          if (!isScrolling) {
-            isScrolling = true;
-            emblaApi.scrollNext();
-            setTimeout(() => {
-              isScrolling = false;
-            }, 300);
-          }
-        }
-        // If !canScrollNext (last card reached), wheel continues naturally down the page!
-      } else if (e.deltaY < -15) {
-        // Scrolling UP
-        if (emblaApi.canScrollPrev()) {
-          e.preventDefault();
-          if (!isScrolling) {
-            isScrolling = true;
-            emblaApi.scrollPrev();
-            setTimeout(() => {
-              isScrolling = false;
-            }, 300);
-          }
-        }
-        // If !canScrollPrev (first card reached), wheel continues naturally up the page!
-      }
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    return () => {
-      window.removeEventListener('wheel', handleWheel);
-    };
-  }, [emblaApi]);
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev < JOURNAL_ARTICLES.length - 1 ? prev + 1 : 0));
+  };
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,39 +118,72 @@ export const JournalSection: React.FC = () => {
   return (
     <section
       id="journal"
-      ref={sectionRef}
       style={{
-        padding: '90px 0 96px',
-        backgroundColor: '#FAF7F1',
+        padding: '100px 0 108px',
+        backgroundColor: activeTheme.bgLight,
         position: 'relative',
         overflow: 'hidden',
+        transition: 'background-color 650ms cubic-bezier(0.22, 1, 0.36, 1)',
       }}
     >
-      {/* Ambient Spotlight Background Glows */}
+      {/* Dynamic Ambient Spotlight Glows Morphed by Active Theme */}
       <div
         style={{
           position: 'absolute',
-          top: '20%',
+          top: '15%',
           right: '5%',
-          width: '500px',
-          height: '500px',
-          background: 'radial-gradient(circle, rgba(181, 100, 61, 0.08) 0%, rgba(250, 247, 241, 0) 70%)',
+          width: '600px',
+          height: '600px',
+          background: `radial-gradient(circle, ${activeTheme.glowColor} 0%, rgba(250, 247, 241, 0) 70%)`,
           pointerEvents: 'none',
           zIndex: 1,
+          transition: 'all 650ms cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       />
       <div
         style={{
           position: 'absolute',
-          bottom: '20%',
+          bottom: '15%',
           left: '5%',
-          width: '500px',
-          height: '500px',
-          background: 'radial-gradient(circle, rgba(23, 61, 58, 0.06) 0%, rgba(250, 247, 241, 0) 70%)',
+          width: '550px',
+          height: '550px',
+          background: `radial-gradient(circle, ${activeTheme.glowColor} 0%, rgba(250, 247, 241, 0) 70%)`,
           pointerEvents: 'none',
           zIndex: 1,
+          transition: 'all 650ms cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       />
+
+      {/* Floating Corner Silhouette Vector Accents (Inspired by Dribbble Reference) */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '40px',
+          left: '36px',
+          opacity: 0.12,
+          pointerEvents: 'none',
+          zIndex: 1,
+          transition: 'all 600ms ease',
+        }}
+        className="corner-silhouette-left"
+      >
+        <activeTheme.icon size={140} color={activeTheme.primary} />
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          top: '60px',
+          right: '48px',
+          opacity: 0.08,
+          pointerEvents: 'none',
+          zIndex: 1,
+          transition: 'all 600ms ease',
+        }}
+        className="corner-silhouette-right"
+      >
+        <activeTheme.icon size={180} color={activeTheme.primary} />
+      </div>
 
       <div
         style={{
@@ -175,17 +200,17 @@ export const JournalSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          style={{ marginBottom: '32px' }}
+          style={{ marginBottom: '36px' }}
         >
-          {/* Eyebrow & Live Status */}
+          {/* Eyebrow and Status Tag */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px', marginBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              <span className="label-eyebrow" style={{ color: '#B5643D', margin: 0 }}>
+              <span className="label-eyebrow" style={{ color: activeTheme.primary, margin: 0, transition: 'color 500ms ease' }}>
                 TRAVEL BLOG & DESTINATION GUIDES
               </span>
               <span
                 style={{
-                  backgroundColor: '#B5643D',
+                  backgroundColor: activeTheme.primary,
                   color: '#FAF7F1',
                   fontSize: '10px',
                   fontFamily: 'Inter, sans-serif',
@@ -197,91 +222,89 @@ export const JournalSection: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '4px',
-                  boxShadow: '0 2px 8px rgba(181, 100, 61, 0.25)',
+                  boxShadow: `0 2px 8px ${activeTheme.glowColor}`,
+                  transition: 'all 500ms ease',
                 }}
               >
                 <Flame size={12} />
-                <span>Curated Edition</span>
+                <span>Featured Monograph</span>
               </span>
             </div>
 
-            {/* Scroll Lock Notice Badge (No Numbers, No Pagination) */}
+            {/* Clean Live Status Tag */}
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                backgroundColor: '#FFFFFF',
-                border: '1px solid #E4DCC8',
+                backgroundColor: 'rgba(255, 255, 255, 0.85)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(26, 27, 24, 0.08)',
                 padding: '6px 14px',
                 borderRadius: '999px',
                 boxShadow: '0 2px 8px rgba(26, 27, 24, 0.04)',
               }}
             >
-              <ArrowDown size={12} color="#B5643D" className="bounce-down-icon" />
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: activeTheme.primary, display: 'inline-block', transition: 'background-color 500ms ease' }} className="pulse-indicator" />
               <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '11px', fontWeight: 600, color: '#1A1B18', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                Scroll down to browse all stories
+                {activeTheme.tag}
               </span>
             </div>
           </div>
 
-          {/* Title & Navigation Controls Row */}
+          {/* Title and Step Controls */}
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '24px', flexWrap: 'wrap' }}>
             <div>
               <h2 className="display-lg" style={{ color: '#1A1B18', margin: 0, fontSize: 'clamp(28px, 3.8vw, 42px)', lineHeight: 1.15, marginBottom: '8px' }}>
                 Inspiring Travel Stories & Insider Guides
               </h2>
               <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '15px', color: '#5C5D54', margin: 0, maxWidth: '640px', lineHeight: 1.6 }}>
-                Discover expert travel philosophy, seasonal vacation guides, and destination insights from our private curators across six continents.
+                Discover expert travel philosophy, seasonal vacation guides, and insider destination notes from our global curators.
               </p>
             </div>
 
-            {/* Navigation Arrows (No Numbers, No Pagination) */}
+            {/* Stepper Navigation Buttons (No Numbering, No Pagination) */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <button
-                onClick={scrollPrev}
-                disabled={!canScrollPrev}
-                aria-label="Previous Story"
+                onClick={handlePrev}
+                aria-label="Previous Dispatch"
                 style={{
                   width: '46px',
                   height: '46px',
                   borderRadius: '50%',
                   backgroundColor: '#FFFFFF',
-                  border: '1px solid #E4DCC8',
+                  border: '1px solid rgba(26, 27, 24, 0.12)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: '#1A1B18',
-                  cursor: canScrollPrev ? 'pointer' : 'default',
-                  opacity: canScrollPrev ? 1 : 0.45,
+                  cursor: 'pointer',
                   transition: 'all 200ms ease',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 }}
-                className="journal-nav-btn"
+                className="accordion-nav-btn"
               >
                 <ChevronLeft size={20} />
               </button>
 
               <button
-                onClick={scrollNext}
-                disabled={!canScrollNext}
-                aria-label="Next Story"
+                onClick={handleNext}
+                aria-label="Next Dispatch"
                 style={{
                   width: '46px',
                   height: '46px',
                   borderRadius: '50%',
-                  backgroundColor: '#B5643D',
+                  backgroundColor: activeTheme.primary,
                   border: 'none',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: '#FAF7F1',
-                  cursor: canScrollNext ? 'pointer' : 'default',
-                  opacity: canScrollNext ? 1 : 0.45,
-                  transition: 'all 200ms ease',
-                  boxShadow: '0 4px 14px rgba(181, 100, 61, 0.35)',
+                  cursor: 'pointer',
+                  transition: 'all 300ms ease',
+                  boxShadow: `0 4px 14px ${activeTheme.glowColor}`,
                 }}
-                className="journal-nav-btn-next"
+                className="accordion-nav-btn-next"
               >
                 <ChevronRight size={20} />
               </button>
@@ -289,248 +312,331 @@ export const JournalSection: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* HORIZONTAL CARDS TRACK */}
-        <div
-          ref={emblaRef}
-          style={{
-            overflow: 'hidden',
-            cursor: 'grab',
-            padding: '8px 0 28px',
-            userSelect: 'none',
-          }}
-          className="journal-embla-viewport"
-        >
-          <div style={{ display: 'flex', gap: '28px', marginLeft: '-14px', paddingLeft: '14px' }}>
-            {JOURNAL_ARTICLES.map((article) => (
-              <div
-                key={article.id}
-                style={{
-                  flex: '0 0 clamp(310px, 30vw, 400px)',
-                  minWidth: '290px',
-                }}
-                className="journal-slide-item"
-              >
-                <div
-                  onClick={() => setSelectedArticle(article)}
-                  style={{
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: '20px',
-                    overflow: 'hidden',
-                    boxShadow: '0 8px 24px rgba(26, 27, 24, 0.05)',
-                    border: '1px solid #E4DCC8',
-                    cursor: 'pointer',
-                    position: 'relative',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    transition: 'all 350ms cubic-bezier(0.22, 1, 0.36, 1)',
-                  }}
-                  className="journal-card"
-                >
-                  {/* Top Hairline Indicator */}
-                  <div className="card-top-hairline" />
-
-                  <div>
-                    {/* Cover Image Container */}
-                    <div style={{ height: '210px', overflow: 'hidden', position: 'relative' }}>
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          transition: 'transform 700ms cubic-bezier(0.22, 1, 0.36, 1)',
-                        }}
-                        className="journal-img"
-                      />
-
-                      {/* Top Gradient Vignette */}
-                      <div
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          background: 'linear-gradient(180deg, rgba(26, 27, 24, 0.3) 0%, rgba(26, 27, 24, 0) 50%, rgba(26, 27, 24, 0.4) 100%)',
-                          pointerEvents: 'none',
-                        }}
-                      />
-
-                      {/* Category Floating Badge */}
-                      <span
-                        style={{
-                          position: 'absolute',
-                          top: '14px',
-                          left: '14px',
-                          backgroundColor: 'rgba(250, 247, 241, 0.94)',
-                          color: '#B5643D',
-                          backdropFilter: 'blur(8px)',
-                          WebkitBackdropFilter: 'blur(8px)',
-                          padding: '5px 12px',
-                          borderRadius: '999px',
-                          fontSize: '10px',
-                          fontWeight: 700,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.08em',
-                          border: '1px solid rgba(181, 100, 61, 0.15)',
-                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                        }}
-                      >
-                        {article.category}
-                      </span>
-
-                      {/* Audio Monograph Badge */}
-                      <div
-                        style={{
-                          position: 'absolute',
-                          bottom: '14px',
-                          right: '14px',
-                          backgroundColor: 'rgba(26, 27, 24, 0.88)',
-                          backdropFilter: 'blur(8px)',
-                          WebkitBackdropFilter: 'blur(8px)',
-                          color: '#FAF7F1',
-                          padding: '4px 10px',
-                          borderRadius: '999px',
-                          fontSize: '10px',
-                          fontFamily: 'Inter, sans-serif',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '5px',
-                          border: '1px solid rgba(255, 255, 255, 0.15)',
-                        }}
-                      >
-                        <Headphones size={11} color="#C9A15E" />
-                        <span>Audio Monograph</span>
-                      </div>
-                    </div>
-
-                    {/* Card Body */}
-                    <div style={{ padding: '20px 22px 14px' }}>
-                      {/* Author and Date Meta */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                        <div
-                          style={{
-                            width: '24px',
-                            height: '24px',
-                            borderRadius: '50%',
-                            backgroundColor: '#FAF7F1',
-                            border: '1px solid #B5643D',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: '#B5643D',
-                          }}
-                        >
-                          <User size={12} />
-                        </div>
-                        <span style={{ fontSize: '12px', fontWeight: 600, color: '#1A1B18', fontFamily: 'Fraunces, serif' }}>
-                          {article.author}
-                        </span>
-                        <span style={{ fontSize: '11px', color: '#8C8D80', fontFamily: 'Inter, sans-serif', marginLeft: 'auto' }}>
-                          {article.date} • <Clock size={11} style={{ display: 'inline', verticalAlign: 'middle' }} /> {article.readTime}
-                        </span>
-                      </div>
-
-                      {/* Article Title */}
-                      <h3
-                        style={{
-                          fontFamily: 'Fraunces, serif',
-                          fontSize: '19px',
-                          color: '#1A1B18',
-                          lineHeight: 1.3,
-                          marginBottom: '10px',
-                        }}
-                        className="journal-card-title"
-                      >
-                        {article.title}
-                      </h3>
-
-                      {/* Excerpt */}
-                      <p
-                        style={{
-                          fontFamily: 'Inter, sans-serif',
-                          fontSize: '13px',
-                          color: '#5C5D54',
-                          lineHeight: 1.6,
-                          margin: 0,
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        {article.excerpt}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Card Action Footer */}
-                  <div
-                    style={{
-                      padding: '14px 22px 18px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      borderTop: '1px solid #F1ECE1',
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        color: '#B5643D',
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        fontFamily: 'Inter, sans-serif',
-                      }}
-                      className="read-cta"
-                    >
-                      <span>Read Monograph</span>
-                      <ArrowRight size={13} className="cta-arrow" />
-                    </div>
-
-                    <span style={{ fontSize: '11px', color: '#8C8D80', fontFamily: 'Inter, sans-serif' }}>
-                      Click to Open
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* REAL-TIME HORIZONTAL SCROLL PROGRESS LINE (NO NUMBERS, NO PAGINATION) */}
+        {/* DRIBBLE-STYLE EXPANDING ACCORDION CAROUSEL CONTAINER */}
         <div
           style={{
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: '8px',
-            marginBottom: '60px',
+            gap: '16px',
+            height: '520px',
+            marginBottom: '64px',
+            alignItems: 'stretch',
           }}
+          className="accordion-carousel-container"
         >
-          <div
-            style={{
-              width: '100%',
-              maxWidth: '380px',
-              height: '4px',
-              backgroundColor: '#E4DCC8',
-              borderRadius: '999px',
-              overflow: 'hidden',
-              position: 'relative',
-            }}
-          >
-            <div
-              style={{
-                height: '100%',
-                width: `${Math.max(16, scrollProgress)}%`,
-                background: 'linear-gradient(90deg, #B5643D 0%, #C9A15E 100%)',
-                borderRadius: '999px',
-                transition: 'width 250ms ease-out',
-              }}
-            />
-          </div>
+          {JOURNAL_ARTICLES.map((article, index) => {
+            const isActive = activeIndex === index;
+            const theme = ARTICLE_THEMES[article.id] || DEFAULT_THEME;
+            const ThemeIcon = theme.icon;
+
+            return (
+              <motion.div
+                key={article.id}
+                layout
+                onClick={() => setActiveIndex(index)}
+                transition={{
+                  layout: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+                }}
+                style={{
+                  flex: isActive ? '3.8 1 0%' : '0.65 1 0%',
+                  minWidth: isActive ? '340px' : '72px',
+                  borderRadius: '24px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  cursor: isActive ? 'default' : 'pointer',
+                  boxShadow: isActive
+                    ? '0 20px 48px rgba(26, 27, 24, 0.16)'
+                    : '0 6px 18px rgba(26, 27, 24, 0.05)',
+                  border: isActive ? `2px solid ${theme.primary}` : '1px solid rgba(26, 27, 24, 0.1)',
+                  backgroundColor: '#FFFFFF',
+                  transition: 'box-shadow 400ms ease, border-color 400ms ease',
+                }}
+                className={`accordion-card ${isActive ? 'is-active' : 'is-collapsed'}`}
+              >
+                <AnimatePresence mode="wait">
+                  {isActive ? (
+                    /* EXPANDED ACTIVE CARD VIEW */
+                    <motion.div
+                      key="expanded"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.4 }}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'grid',
+                        gridTemplateColumns: '1.05fr 1fr',
+                        position: 'relative',
+                        backgroundColor: '#FFFFFF',
+                      }}
+                      className="expanded-card-layout"
+                    >
+                      {/* Left: Hero Imagery with Vignette */}
+                      <div style={{ position: 'relative', height: '100%', overflow: 'hidden' }}>
+                        <img
+                          src={article.image}
+                          alt={article.title}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            transition: 'transform 800ms cubic-bezier(0.22, 1, 0.36, 1)',
+                          }}
+                          className="expanded-card-img"
+                        />
+
+                        {/* Soft Vignette Overlay */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            background: 'linear-gradient(180deg, rgba(26, 27, 24, 0.4) 0%, rgba(26, 27, 24, 0.1) 40%, rgba(26, 27, 24, 0.6) 100%)',
+                            pointerEvents: 'none',
+                          }}
+                        />
+
+                        {/* Top Floating Badge */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '20px',
+                            left: '20px',
+                            backgroundColor: 'rgba(250, 247, 241, 0.94)',
+                            backdropFilter: 'blur(10px)',
+                            WebkitBackdropFilter: 'blur(10px)',
+                            color: theme.primary,
+                            padding: '6px 14px',
+                            borderRadius: '999px',
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.08em',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            border: '1px solid rgba(255, 255, 255, 0.4)',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                          }}
+                        >
+                          <ThemeIcon size={13} color={theme.primary} />
+                          <span>{article.category}</span>
+                        </div>
+
+                        {/* Audio Monograph Tag */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            bottom: '20px',
+                            left: '20px',
+                            backgroundColor: 'rgba(26, 27, 24, 0.88)',
+                            backdropFilter: 'blur(8px)',
+                            WebkitBackdropFilter: 'blur(8px)',
+                            color: '#FAF7F1',
+                            padding: '5px 12px',
+                            borderRadius: '999px',
+                            fontSize: '11px',
+                            fontFamily: 'Inter, sans-serif',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            border: '1px solid rgba(255, 255, 255, 0.15)',
+                          }}
+                        >
+                          <Headphones size={12} color="#C9A15E" />
+                          <span>Audio Monograph</span>
+                        </div>
+                      </div>
+
+                      {/* Right: Editorial Typography & Action */}
+                      <div
+                        style={{
+                          padding: '36px 36px 28px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                          boxSizing: 'border-box',
+                        }}
+                        className="expanded-content-box"
+                      >
+                        <div>
+                          {/* Author & Meta */}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+                            <div
+                              style={{
+                                width: '28px',
+                                height: '28px',
+                                borderRadius: '50%',
+                                backgroundColor: theme.bgLight,
+                                border: `1px solid ${theme.primary}`,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: theme.primary,
+                              }}
+                            >
+                              <User size={14} />
+                            </div>
+                            <span style={{ fontSize: '13px', fontWeight: 600, color: '#1A1B18', fontFamily: 'Fraunces, serif' }}>
+                              {article.author}
+                            </span>
+                            <span style={{ fontSize: '12px', color: '#8C8D80', fontFamily: 'Inter, sans-serif', marginLeft: 'auto' }}>
+                              {article.date} • <Clock size={12} style={{ display: 'inline', verticalAlign: 'middle' }} /> {article.readTime}
+                            </span>
+                          </div>
+
+                          {/* Headline */}
+                          <h3
+                            style={{
+                              fontFamily: 'Fraunces, serif',
+                              fontSize: 'clamp(20px, 2vw, 26px)',
+                              color: '#1A1B18',
+                              lineHeight: 1.25,
+                              marginBottom: '16px',
+                            }}
+                          >
+                            {article.title}
+                          </h3>
+
+                          {/* Excerpt */}
+                          <p
+                            style={{
+                              fontFamily: 'Inter, sans-serif',
+                              fontSize: '14px',
+                              color: '#5C5D54',
+                              lineHeight: 1.65,
+                              margin: 0,
+                              display: '-webkit-box',
+                              WebkitLineClamp: 3,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            {article.excerpt}
+                          </p>
+                        </div>
+
+                        {/* CTA Footer Action */}
+                        <div
+                          style={{
+                            paddingTop: '20px',
+                            borderTop: '1px solid #F1ECE1',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                          }}
+                        >
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedArticle(article);
+                            }}
+                            style={{
+                              backgroundColor: theme.primary,
+                              color: '#FAF7F1',
+                              border: 'none',
+                              padding: '12px 22px',
+                              borderRadius: '12px',
+                              fontFamily: 'Inter, sans-serif',
+                              fontSize: '13px',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              boxShadow: `0 4px 14px ${theme.glowColor}`,
+                              transition: 'all 200ms ease',
+                            }}
+                            className="read-article-btn"
+                          >
+                            <span>Read Full Monograph</span>
+                            <ArrowRight size={14} className="cta-arrow" />
+                          </button>
+
+                          <span style={{ fontSize: '11px', color: '#8C8D80', fontFamily: 'Inter, sans-serif' }}>
+                            Full Monograph View
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    /* COLLAPSED VERTICAL TAB VIEW (DRIBBLE REFERENCE STYLE) */
+                    <motion.div
+                      key="collapsed"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: '#FFFFFF',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '24px 0 28px',
+                        position: 'relative',
+                      }}
+                      className="collapsed-tab-layout"
+                    >
+                      {/* Top Icon Badge (Matching Dribbble Reference) */}
+                      <div
+                        style={{
+                          width: '44px',
+                          height: '44px',
+                          borderRadius: '50%',
+                          backgroundColor: theme.bgLight,
+                          border: `1.5px solid ${theme.primary}`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: theme.primary,
+                          transition: 'transform 300ms ease',
+                        }}
+                        className="collapsed-icon-badge"
+                      >
+                        <ThemeIcon size={20} color={theme.primary} />
+                      </div>
+
+                      {/* Rotated Vertical Spined Title (Dribbble Reference Signature) */}
+                      <div
+                        style={{
+                          writingMode: 'vertical-rl',
+                          textOrientation: 'mixed',
+                          transform: 'rotate(180deg)',
+                          textAlign: 'center',
+                          fontFamily: 'Fraunces, serif',
+                          fontSize: '17px',
+                          fontWeight: 600,
+                          letterSpacing: '0.04em',
+                          color: '#1A1B18',
+                          whiteSpace: 'nowrap',
+                          maxHeight: '300px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          lineHeight: 1.2,
+                        }}
+                        className="collapsed-spined-title"
+                      >
+                        {article.title}
+                      </div>
+
+                      {/* Bottom Category Tag Indicator */}
+                      <div
+                        style={{
+                          width: '10px',
+                          height: '10px',
+                          borderRadius: '50%',
+                          backgroundColor: theme.primary,
+                          boxShadow: `0 0 8px ${theme.primary}`,
+                        }}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* PRIVATE MONOGRAPH NEWSLETTER DISPATCH BOX */}
@@ -618,7 +724,7 @@ export const JournalSection: React.FC = () => {
                   type="submit"
                   className="btn-primary"
                   style={{
-                    backgroundColor: '#B5643D',
+                    backgroundColor: activeTheme.primary,
                     color: '#FAF7F1',
                     border: 'none',
                     borderRadius: '12px',
@@ -627,7 +733,7 @@ export const JournalSection: React.FC = () => {
                     fontWeight: 600,
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
-                    transition: 'all 200ms ease',
+                    transition: 'all 300ms ease',
                   }}
                 >
                   Subscribe
@@ -649,64 +755,74 @@ export const JournalSection: React.FC = () => {
       />
 
       <style>{`
-        .bounce-down-icon {
-          animation: bounceDown 1.8s ease-in-out infinite;
+        .pulse-indicator {
+          animation: pulseGlow 2s infinite;
         }
-        @keyframes bounceDown {
-          0%, 100% {
-            transform: translateY(-2px);
+        @keyframes pulseGlow {
+          0% {
+            box-shadow: 0 0 0 0 rgba(181, 100, 61, 0.6);
           }
-          50% {
-            transform: translateY(3px);
+          70% {
+            box-shadow: 0 0 0 6px rgba(181, 100, 61, 0);
+          }
+          100% {
+            box-shadow: 0 0 0 0 rgba(181, 100, 61, 0);
           }
         }
 
-        .journal-embla-viewport:active {
-          cursor: grabbing !important;
+        .accordion-card.is-collapsed:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 28px rgba(26, 27, 24, 0.09) !important;
         }
 
-        .card-top-hairline {
-          position: absolute;
-          top: 0;
-          left: 0;
-          height: 3px;
-          width: 0%;
-          background: linear-gradient(90deg, #B5643D 0%, #C9A15E 100%);
-          transition: width 400ms ease;
-          z-index: 5;
+        .accordion-card.is-collapsed:hover .collapsed-icon-badge {
+          transform: scale(1.1);
         }
-        .journal-card:hover .card-top-hairline {
-          width: 100% !important;
-        }
-        .journal-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 20px 48px rgba(181, 100, 61, 0.15) !important;
-          border-color: #B5643D !important;
-        }
-        .journal-card:hover .journal-img {
-          transform: scale(1.06);
-        }
-        .journal-card:hover .journal-card-title {
+
+        .accordion-card.is-collapsed:hover .collapsed-spined-title {
           color: #B5643D;
         }
-        .journal-card:hover .cta-arrow {
-          transform: translateX(6px);
-          transition: transform 250ms ease;
+
+        .expanded-card-layout:hover .expanded-card-img {
+          transform: scale(1.05);
         }
 
-        .journal-nav-btn:hover:not(:disabled) {
-          border-color: #B5643D !important;
-          color: #B5643D !important;
+        .read-article-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important;
+        }
+        .read-article-btn:hover .cta-arrow {
+          transform: translateX(4px);
+          transition: transform 200ms ease;
+        }
+
+        .accordion-nav-btn:hover {
+          border-color: #1A1B18 !important;
           transform: scale(1.05);
         }
-        .journal-nav-btn-next:hover:not(:disabled) {
-          background-color: #9E522F !important;
+        .accordion-nav-btn-next:hover {
           transform: scale(1.05);
+          filter: brightness(1.1);
         }
 
         @media (max-width: 960px) {
-          .journal-slide-item {
-            flex: 0 0 85% !important;
+          .accordion-carousel-container {
+            flex-direction: column !important;
+            height: auto !important;
+          }
+          .accordion-card {
+            flex: none !important;
+            width: 100% !important;
+            height: auto !important;
+          }
+          .accordion-card.is-collapsed {
+            display: none !important;
+          }
+          .expanded-card-layout {
+            grid-template-columns: 1fr !important;
+          }
+          .expanded-card-layout img {
+            height: 240px !important;
           }
           .newsletter-box-grid {
             grid-template-columns: 1fr !important;
