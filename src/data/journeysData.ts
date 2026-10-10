@@ -757,6 +757,54 @@ export const JOURNAL_ARTICLES: JournalArticle[] = [
       'Inside, lenga wood beams, sheepskin rugs, and floor-to-ceiling glass frame the jagged granite horns of Torres del Paine like living works of art.',
       'This is architecture in dialogue with nature — warm, protective, and deeply humbling.'
     ]
+  },
+  {
+    id: 'serengeti-migration-nomads',
+    slug: 'serengeti-migration-nomads',
+    title: 'Echoes Across the Mara: Secret Migration Corridors of the Serengeti',
+    excerpt: 'Tracking apex predators and million-strong herds through private wilderness concessions far from the crowds.',
+    category: 'Wildlife & Conservation',
+    readTime: '8 min read',
+    date: 'April 22, 2026',
+    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop',
+    author: 'Amina Kimaro',
+    content: [
+      'As dawn breaks over the endless savannah, the morning mist rises to reveal an unbroken horizon teeming with life.',
+      'With our resident Maasai trackers, travelers venture deep into private conservancies where off-road tracking and night drives unlock intimate encounters with elusive leopards and lions.',
+      'In camp, canvas pavilions furnished with hand-stitched leather and brass telescope stands offer front-row seats to earth’s greatest wildlife spectacle.'
+    ]
+  },
+  {
+    id: 'ravello-cliffside-villas',
+    slug: 'ravello-cliffside-villas',
+    title: 'The Cliffside Sanctuaries of Ravello: Lemon Groves & Solitude',
+    excerpt: 'High above the Amalfi coastline, discovering historic villas, terraced gardens, and tranquil Mediterranean afternoons.',
+    category: 'Coastal Retreats',
+    readTime: '6 min read',
+    date: 'March 30, 2026',
+    image: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1200&auto=format&fit=crop',
+    author: 'Matteo Bellini',
+    content: [
+      'While the coastal highway bustles below, Ravello hovers in timeless serenity high above the Tyrrhenian Sea.',
+      'Here, secluded between pergola walkways draped with wisteria and ancient stone belvederes, guests savor private classical violin recitals overlooking the sparkling azure waters.',
+      'It is an Amalfi experience defined by quiet contemplation, bespoke wine tastings, and secluded sun-drenched terraces.'
+    ]
+  },
+  {
+    id: 'alpine-thermal-engadin',
+    slug: 'alpine-thermal-engadin',
+    title: 'The Alpine Thermal Ritual: High-Altitude Healing in the Swiss Engadin',
+    excerpt: 'Centuries of mineral-rich spring waters meet contemporary architectural sanctuaries in the high Alps.',
+    category: 'Wellness & Restoration',
+    readTime: '5 min read',
+    date: 'February 12, 2026',
+    image: 'https://images.unsplash.com/photo-1502784444187-359ac186c5bb?q=80&w=1200&auto=format&fit=crop',
+    author: 'Sébastien Favre',
+    content: [
+      'Surrounded by snow-capped peaks and crisp alpine air, the natural hot springs of the Engadin valley have offered restorative sanctuary since Roman times.',
+      'Modern wellness pavilions built of local Valser quartzite stone allow steaming thermal pools to spill right into the pine forest canopy.',
+      'Combined with tailored herbal remedies, sound therapy, and unhurried alpine walks, every element revitalizes body and mind.'
+    ]
   }
 ];
 
